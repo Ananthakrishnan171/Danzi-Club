@@ -1,0 +1,7 @@
+Username : kanna_7
+Password : kannama171
+
+
+
+
+mongodb+srv://milkyboi33_db_user:<db_password>@cluster0.8iatlza.mongodb.net/?appName=Cluster0
