@@ -5,6 +5,12 @@ import loho1 from '../Assets/loho1.png';
 import rockImg from '../Assets/rock.jpg';
 import hiImg from '../Assets/hi.jpg';
 import ba1Img from '../Assets/ba1.jpg';
+import hiphopImg from '../Assets/hiphop.jpg';
+import breakImg from '../Assets/break.png';
+import ZumImg from '../Assets/jum.webp';
+
+
+
 
 // Custom hook for Intersection Observer reveal animations
 function useReveal() {
@@ -85,6 +91,28 @@ const Home = () => {
                 <img src={ba1Img} alt="Bharatanatyam" />
               </div>
               <h3>Bharatanatyam</h3>
+            </div>
+          </div>
+          <div className="section-header reveal">
+          </div>
+          <div className="cards-grid stagger-children">
+            <div className="style-card">
+              <div className="style-image">
+                <img src={hiphopImg} alt="hIPhop Dance" />
+              </div>
+              <h3>Hip Hop </h3>
+            </div>
+            <div className="style-card">
+              <div className="style-image">
+                <img src={breakImg} alt="bREAK Dance" />
+              </div>
+              <h3>Break Dance</h3>
+            </div>
+            <div className="style-card">
+              <div className="style-image">
+                <img src={ZumImg} alt="Folk DANCE" />
+              </div>
+              <h3>Zumba Dance</h3>
             </div>
           </div>
         </section>
