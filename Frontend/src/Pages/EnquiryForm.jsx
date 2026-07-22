@@ -1,19 +1,41 @@
 import React, { useState } from 'react';
 import Footer from '../Components/Footer';
+import { apiCall } from '../utils/api';
 
 const EnquiryForm = () => {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setForm({ name: '', email: '', subject: '', message: '' });
-    }, 2000);
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await apiCall('/enquiries/submit', 'POST', {
+        name: form.name,
+        email: form.email,
+        subject: form.subject,
+        message: form.message
+      });
+
+      if (res.success) {
+        setSubmitted(true);
+        setForm({ name: '', email: '', subject: '', message: '' });
+        setTimeout(() => {
+          setSubmitted(false);
+        }, 4000);
+      }
+    } catch (err) {
+      console.error('Failed to submit enquiry:', err);
+      setError(err.message || 'Failed to submit enquiry.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

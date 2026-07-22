@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Footer from '../Components/Footer';
+import { apiCall } from '../utils/api';
 
 function useReveal() {
   useEffect(() => {
@@ -21,16 +22,37 @@ const Contact = () => {
   useReveal();
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setForm({ name: '', email: '', message: '' });
-    }, 2000);
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await apiCall('/enquiries/submit', 'POST', {
+        name: form.name,
+        email: form.email,
+        message: form.message,
+        subject: 'Website Contact Message'
+      });
+
+      if (res.success) {
+        setSubmitted(true);
+        setForm({ name: '', email: '', message: '' });
+        setTimeout(() => {
+          setSubmitted(false);
+        }, 4000);
+      }
+    } catch (err) {
+      console.error('Failed to save contact enquiry:', err);
+      setError(err.message || 'Failed to send message.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
