@@ -102,6 +102,60 @@ router.put('/users/:id/role', adminOnly, async (req, res) => {
   }
 });
 
+// Create new user (Admin manual add)
+router.post('/users', adminOnly, async (req, res) => {
+  const { fullName, email, mobileNumber, password, role } = req.body;
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ success: false, message: 'User already exists' });
+    
+    const user = await User.create({
+      fullName,
+      email,
+      mobileNumber: mobileNumber || 'N/A',
+      password,
+      role: role || 'Student'
+    });
+    
+    return res.status(201).json({ success: true, user: { _id: user._id, fullName: user.fullName, email: user.email, role: user.role } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Update user details
+router.put('/users/:id', adminOnly, async (req, res) => {
+  const { fullName, email, mobileNumber, role, password } = req.body;
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    if (fullName) user.fullName = fullName;
+    if (email) user.email = email;
+    if (mobileNumber) user.mobileNumber = mobileNumber;
+    if (role) user.role = role;
+    if (password) user.password = password; // Will be hashed by pre-save hook
+
+    await user.save();
+    return res.status(200).json({ success: true, message: 'User updated successfully', user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Delete user (Soft Delete)
+router.delete('/users/:id', adminOnly, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    
+    await user.softDelete();
+    return res.status(200).json({ success: true, message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // Get all business incubator applications
 router.get('/applications', adminOnly, async (req, res) => {
   try {

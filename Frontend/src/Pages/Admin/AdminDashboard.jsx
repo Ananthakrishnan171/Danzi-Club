@@ -14,6 +14,7 @@ const AdminDashboard = () => {
         maxWidth: '1200px',
         margin: '0 auto'
       }}>
+        <DashboardCard title="Manage Students & Users" link="/admin/students" icon="🎓" />
         <DashboardCard title="Manage Events" link="/admin/events" icon="📅" />
         <DashboardCard title="Manage Classes" link="/admin/classes" icon="🕺" />
         <DashboardCard title="Manage Instructors" link="/admin/instructors" icon="👥" />

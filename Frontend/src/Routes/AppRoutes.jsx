@@ -21,6 +21,7 @@ import AdminDashboard from "../Pages/Admin/AdminDashboard";
 import ManageEvents from "../Pages/Admin/ManageEvents";
 import ManageClasses from "../Pages/Admin/ManageClasses";
 import ManageInstructors from "../Pages/Admin/ManageInstructors";
+import ManageStudents from "../Pages/Admin/ManageStudents";
 import ManageContent from "../Pages/Admin/ManageContent";
 import ManageGallery from "../Pages/Admin/ManageGallery";
 import ProtectedRoute from "../Components/ProtectedRoute";
@@ -55,6 +56,11 @@ function AppRoutes() {
       <Route path="/admin" element={
         <ProtectedRoute requiredRole="Admin">
           <AdminDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/students" element={
+        <ProtectedRoute requiredRole="Admin">
+          <ManageStudents />
         </ProtectedRoute>
       } />
       <Route path="/admin/events" element={
