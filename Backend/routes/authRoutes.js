@@ -67,40 +67,7 @@ router.post('/signup', limitRate(10), async (req, res) => {
   }
 });
 
-// Verify OTP & Complete Signup (or return existing user)
-router.post('/verify-signup', async (req, res) => {
-  const { email } = req.body;
 
-  try {
-    let user = await User.findOne({ email });
-    if (!user) {
-      // Create user fallback
-      const displayName = email ? email.split('@')[0] : 'Member';
-      user = await User.create({
-        fullName: displayName.charAt(0).toUpperCase() + displayName.slice(1),
-        email: email || 'user@danzi.com',
-        mobileNumber: 'N/A',
-        password: 'Password123!',
-        role: email && email.includes('admin') ? 'Admin' : 'User'
-      });
-    }
-
-    const token = generateToken(user._id, false);
-    return res.status(200).json({
-      success: true,
-      token,
-      user: {
-        id: user._id,
-        fullName: user.fullName,
-        email: user.email,
-        mobileNumber: user.mobileNumber,
-        role: user.role
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
 
 // Login Route
 router.post('/login', limitRate(20), async (req, res) => {

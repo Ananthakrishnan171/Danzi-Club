@@ -35,6 +35,10 @@ const Login = () => {
       
       if (res.success) {
         setSubmitted(true);
+        // Save auth details
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        
         setTimeout(() => {
           if (res.user?.role === 'Admin') {
             navigate('/admin');

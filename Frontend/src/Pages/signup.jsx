@@ -18,13 +18,14 @@ const Signup = () => {
     
     try {
       // Create account
-      await apiCall('/auth/signup', 'POST', { email: form.email, password: form.password, name: form.username });
-      
-      // Simulate verifying it and logging in immediately
-      const res = await apiCall('/auth/verify-signup', 'POST', { email: form.email });
+      const res = await apiCall('/auth/signup', 'POST', { email: form.email, password: form.password, name: form.username });
       
       if (res.success) {
         setSubmitted(true);
+        // Save the token and user to localStorage so they are logged in
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        
         setTimeout(() => {
           navigate('/students'); // Redirect to dashboard
         }, 1500);
