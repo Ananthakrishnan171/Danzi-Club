@@ -1,5 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import SchoolIcon from '@mui/icons-material/School';
+import EventIcon from '@mui/icons-material/Event';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import PeopleIcon from '@mui/icons-material/People';
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 
 const AdminDashboard = () => {
   return (
@@ -14,12 +20,12 @@ const AdminDashboard = () => {
         maxWidth: '1200px',
         margin: '0 auto'
       }}>
-        <DashboardCard title="Manage Students & Users" link="/admin/students" icon="🎓" />
-        <DashboardCard title="Manage Events" link="/admin/events" icon="📅" />
-        <DashboardCard title="Manage Classes" link="/admin/classes" icon="🕺" />
-        <DashboardCard title="Manage Instructors" link="/admin/instructors" icon="👥" />
-        <DashboardCard title="Manage Gallery" link="/admin/gallery" icon="🖼️" />
-        <DashboardCard title="Manage Content" link="/admin/content" icon="📝" />
+        <DashboardCard title="Manage Students & Users" link="/admin/students" icon={<SchoolIcon fontSize="inherit" />} />
+        <DashboardCard title="Manage Events" link="/admin/events" icon={<EventIcon fontSize="inherit" />} />
+        <DashboardCard title="Manage Classes" link="/admin/classes" icon={<DirectionsRunIcon fontSize="inherit" />} />
+        <DashboardCard title="Manage Instructors" link="/admin/instructors" icon={<PeopleIcon fontSize="inherit" />} />
+        <DashboardCard title="Manage Gallery" link="/admin/gallery" icon={<PhotoLibraryIcon fontSize="inherit" />} />
+        <DashboardCard title="Manage Content" link="/admin/content" icon={<EditNoteIcon fontSize="inherit" />} />
       </div>
     </div>
   );
@@ -28,19 +34,30 @@ const AdminDashboard = () => {
 const DashboardCard = ({ title, link, icon }) => (
   <Link to={link} style={{ textDecoration: 'none' }}>
     <div style={{
-      background: 'var(--glass-bg)',
-      border: 'var(--glass-border)',
+      background: 'rgba(255, 255, 255, 0.05)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
       padding: '2rem',
-      borderRadius: 'var(--radius)',
+      borderRadius: '12px',
       textAlign: 'center',
       transition: 'all 0.3s',
-      color: 'var(--text-light)',
+      color: 'var(--text-light, #fff)',
       cursor: 'pointer'
     }}
-    onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-    onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+    onMouseOver={(e) => {
+      e.currentTarget.style.transform = 'translateY(-5px)';
+      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+      e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+    }}
+    onMouseOut={(e) => {
+      e.currentTarget.style.transform = 'translateY(0)';
+      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+      e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+    }}
     >
-      <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{icon}</div>
+      <div style={{ fontSize: '3.5rem', marginBottom: '1rem', color: '#6366f1', display: 'flex', justifyContent: 'center' }}>
+        {icon}
+      </div>
       <h3>{title}</h3>
     </div>
   </Link>
