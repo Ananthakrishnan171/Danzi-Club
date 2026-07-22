@@ -1,0 +1,9 @@
+{
+  "name": "danzi-club",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "cd Backend && npm install",
+    "start": "cd Backend && node server.js"
+  }
+}
