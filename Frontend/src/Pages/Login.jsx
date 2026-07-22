@@ -4,6 +4,7 @@ import { apiCall } from '../utils/api';
 
 const Login = () => {
   const [form, setForm] = useState({ username: '', password: '' });
+  const [role, setRole] = useState('User'); // 'User' or 'Admin'
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -11,18 +12,35 @@ const Login = () => {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
+  const handleRoleToggle = (selectedRole) => {
+    setRole(selectedRole);
+    if (selectedRole === 'Admin') {
+      setForm({ username: 'admin', password: 'admin@1234' }); // Auto-fill for convenience based on requirements
+    } else {
+      setForm({ username: '', password: '' });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      const res = await apiCall('/auth/login', 'POST', { email: form.username, password: form.password });
+      const res = await apiCall('/auth/login', 'POST', { 
+        email: form.username, 
+        password: form.password,
+        role: role // Pass the selected role
+      });
       
       if (res.success) {
         setSubmitted(true);
         setTimeout(() => {
-          navigate('/students'); // Redirect to dashboard
+          if (res.user?.role === 'Admin') {
+            navigate('/admin');
+          } else {
+            navigate('/students'); // Redirect to dashboard
+          }
         }, 1500);
       }
     } catch (err) {
@@ -43,6 +61,31 @@ const Login = () => {
             {error}
           </div>
         )}
+
+        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', justifyContent: 'center' }}>
+          <button 
+            type="button" 
+            onClick={() => handleRoleToggle('User')}
+            style={{ 
+              flex: 1, padding: '0.5rem', borderRadius: '4px', border: '1px solid #333', 
+              background: role === 'User' ? '#6366f1' : 'transparent',
+              color: role === 'User' ? '#fff' : '#aaa',
+              cursor: 'pointer', transition: 'all 0.2s'
+            }}>
+            User
+          </button>
+          <button 
+            type="button" 
+            onClick={() => handleRoleToggle('Admin')}
+            style={{ 
+              flex: 1, padding: '0.5rem', borderRadius: '4px', border: '1px solid #333', 
+              background: role === 'Admin' ? '#ef4444' : 'transparent',
+              color: role === 'Admin' ? '#fff' : '#aaa',
+              cursor: 'pointer', transition: 'all 0.2s'
+            }}>
+            Admin
+          </button>
+        </div>
 
         <form id="loginForm" onSubmit={handleSubmit}>
           <div className="form-group">

@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 // Helper to get token
 const getHeaders = () => {
@@ -35,13 +35,28 @@ function getOfflineMock(endpoint, method, body, originalError) {
   console.log(`[Offline Mock Layer Active] Handling ${method} ${endpoint}`);
   
   if (endpoint.includes('/auth/login')) {
-    // Return fake token
+    if (body.email === 'admin') {
+      if (body.password !== 'admin@1234') {
+        throw new Error('Invalid admin credentials.');
+      }
+      const mockAdmin = {
+        id: 'admin-1',
+        fullName: 'Administrator',
+        email: 'admin',
+        role: 'Admin'
+      };
+      localStorage.setItem('token', 'mock-admin-token');
+      localStorage.setItem('user', JSON.stringify(mockAdmin));
+      return { success: true, token: 'mock-admin-token', user: mockAdmin };
+    }
+
+    // Regular user login
     const mockUser = {
       id: 'mock-user-123',
-      fullName: body.email.includes('admin') ? 'Administrator' : 'Janardhan Prasad',
+      fullName: 'Janardhan Prasad',
       email: body.email,
       mobileNumber: '9876543210',
-      role: body.email.includes('admin') ? 'Admin' : (body.email.includes('student') ? 'Student' : 'User')
+      role: 'User'
     };
     localStorage.setItem('token', 'mock-jwt-token-xyz');
     localStorage.setItem('user', JSON.stringify(mockUser));

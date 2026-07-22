@@ -67,6 +67,8 @@ const ApplicationForm = () => {
                     <option value="bharatanatyam">Bharatanatyam</option>
                     <option value="classical">Classical Dance</option>
                     <option value="hiphop">Hip Hop</option>
+                    <option value="zumba">Zumba Dance</option>
+                    <option value="breakdance">Break Dance</option>
                   </select>
                 </div>
                 <button

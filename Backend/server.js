@@ -43,6 +43,9 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/enquiries', enquiryRoutes);
 app.use('/api/admin', adminRoutes);
 
+const cmsRoutes = require('./routes/cmsRoutes');
+app.use('/api/cms', cmsRoutes);
+
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);

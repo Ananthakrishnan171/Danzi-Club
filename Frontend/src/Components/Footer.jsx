@@ -22,6 +22,11 @@ const Footer = () => (
           <a href="mailto:danzistars@gmail.com">Email</a>
           <a href="tel:+918778131152">Call Us</a>
         </div>
+        <div className="footer-links-col">
+          <h4>Legal</h4>
+          <Link to="/privacy">Privacy Policy</Link>
+          <Link to="/terms">Terms & Conditions</Link>
+        </div>
       </div>
     </div>
     <div className="footer-bottom">

@@ -26,6 +26,7 @@ const Navbar = () => {
       <div className={`nav-links${menuOpen ? ' open' : ''}`} id="navLinks">
         <Link to="/" className={isActive('/') ? 'active' : ''}>Home</Link>
         <Link to="/about" className={isActive('/about') ? 'active' : ''}>About</Link>
+        <Link to="/instructors" className={isActive('/instructors') ? 'active' : ''}>Instructors</Link>
         <Link to="/events" className={isActive('/events') ? 'active' : ''}>Events</Link>
         <Link to="/admission" className={isActive('/admission') ? 'active' : ''}>Admission</Link>
         <Link to="/contact" className={isActive('/contact') ? 'active' : ''}>Contact</Link>
