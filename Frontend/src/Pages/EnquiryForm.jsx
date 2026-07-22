@@ -5,8 +5,8 @@ import { apiCall } from '../utils/api';
 const EnquiryForm = () => {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
-  const [, setLoading] = useState(false);
-  const [, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -50,6 +50,11 @@ const EnquiryForm = () => {
 
           <div className="form-container">
             <div className="form-card">
+              {error && (
+                <div style={{ color: '#ef4444', marginBottom: '1rem', textAlign: 'center', fontSize: '0.9rem' }}>
+                  {error}
+                </div>
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label htmlFor="enquiryName">Your Name</label>
@@ -74,6 +79,7 @@ const EnquiryForm = () => {
                 </div>
                 <button
                   type="submit"
+                  disabled={loading}
                   className="btn btn-primary btn-large"
                   style={{
                     width: '100%',
@@ -81,7 +87,7 @@ const EnquiryForm = () => {
                     color: submitted ? '#fff' : '',
                   }}
                 >
-                  {submitted ? '✓ Enquiry Sent!' : 'Send Message →'}
+                  {submitted ? '✓ Enquiry Sent!' : loading ? 'Sending...' : 'Send Message →'}
                 </button>
               </form>
             </div>

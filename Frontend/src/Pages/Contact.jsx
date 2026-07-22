@@ -22,8 +22,8 @@ const Contact = () => {
   useReveal();
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
-  const [, setLoading] = useState(false);
-  const [, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -129,6 +129,11 @@ const Contact = () => {
 
           <div className="form-container">
             <div className="form-card">
+              {error && (
+                <div style={{ color: '#ef4444', marginBottom: '1rem', textAlign: 'center', fontSize: '0.9rem' }}>
+                  {error}
+                </div>
+              )}
               <form id="contactForm" onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label htmlFor="contactName">Your Name</label>
@@ -168,6 +173,7 @@ const Contact = () => {
                 </div>
                 <button
                   type="submit"
+                  disabled={loading}
                   className="btn btn-primary btn-large"
                   style={{
                     width: '100%',
@@ -175,7 +181,7 @@ const Contact = () => {
                     color: submitted ? '#fff' : '',
                   }}
                 >
-                  {submitted ? '✓ Submitted!' : 'Send Message →'}
+                  {submitted ? '✓ Submitted!' : loading ? 'Sending...' : 'Send Message →'}
                 </button>
               </form>
             </div>

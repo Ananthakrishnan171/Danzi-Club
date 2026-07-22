@@ -7,7 +7,7 @@ const ApplicationForm = () => {
     firstName: '', lastName: '', email: '', phone: '', experience: '', style: 'western'
   });
   const [submitted, setSubmitted] = useState(false);
-  const [, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -101,14 +101,15 @@ const ApplicationForm = () => {
                 </div>
                 <button
                   type="submit"
+                  disabled={loading}
                   className="btn btn-primary btn-large"
                   style={{
                     width: '100%',
                     background: submitted ? '#22c55e' : '',
-                    color: submitted ? '#fff' : '',
+                    color: submitted ? '#fff' : ''
                   }}
                 >
-                  {submitted ? '✓ Application Submitted!' : 'Submit Application'}
+                  {submitted ? '✓ Application Submitted!' : loading ? 'Submitting...' : 'Submit Application →'}
                 </button>
               </form>
             </div>

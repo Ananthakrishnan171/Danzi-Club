@@ -26,7 +26,7 @@ const Admission = () => {
     address: '', course: 'western', batch: 'morning', photo: null
   });
   const [submitted, setSubmitted] = useState(false);
-  const [, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
@@ -196,14 +196,15 @@ const Admission = () => {
                 <div className="form-actions">
                   <button
                     type="submit"
+                    disabled={loading}
                     className="btn btn-primary btn-large"
                     style={{
-                      flex: 1,
+                      width: '100%',
                       background: submitted ? '#22c55e' : '',
-                      color: submitted ? '#fff' : '',
+                      color: submitted ? '#fff' : ''
                     }}
                   >
-                    {submitted ? '✓ Submitted!' : 'Submit Application'}
+                    {submitted ? '✓ Application Submitted!' : loading ? 'Submitting...' : 'Submit Application →'}
                   </button>
                   <button
                     type="button"
