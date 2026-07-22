@@ -56,6 +56,13 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`AI Product Launch Studio Server running on port ${PORT}`);
-});
+
+// Only start the HTTP server when NOT running on Vercel (Render, local, etc.)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`AI Product Launch Studio Server running on port ${PORT}`);
+  });
+}
+
+// Export app for Vercel serverless
+module.exports = app;

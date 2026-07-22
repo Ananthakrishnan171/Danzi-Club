@@ -10,7 +10,10 @@
     },
     {
       "src": "Backend/server.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["Backend/**"]
+      }
     }
   ],
   "routes": [
@@ -19,8 +22,16 @@
       "dest": "Backend/server.js"
     },
     {
-      "src": "/(.*)",
+      "src": "/static/(.*)",
+      "dest": "Frontend/static/$1"
+    },
+    {
+      "src": "/(.*\\.(js|css|json|ico|png|svg|woff|woff2|ttf|map))",
       "dest": "Frontend/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "Frontend/index.html"
     }
   ]
 }
