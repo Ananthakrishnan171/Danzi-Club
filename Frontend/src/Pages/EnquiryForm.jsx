@@ -5,6 +5,8 @@ import { apiCall } from '../utils/api';
 const EnquiryForm = () => {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [, setLoading] = useState(false);
+  const [, setError] = useState('');
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
