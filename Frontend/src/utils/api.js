@@ -19,13 +19,20 @@ export const apiCall = async (endpoint, method = 'GET', body = null) => {
     
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong');
+      const err = new Error(data.message || 'Server request failed');
+      err.isServerError = true;
+      throw err;
     }
     return data;
   } catch (error) {
     console.error(`API Call failed to ${endpoint}:`, error.message);
     
-    // Smart offline mock fallback so the hackathon demo NEVER breaks
+    // If backend server returned a real HTTP error response, throw it!
+    if (error.isServerError) {
+      throw error;
+    }
+
+    // Only fallback to mock layer if network/connection to backend failed
     return getOfflineMock(endpoint, method, body, error.message);
   }
 };

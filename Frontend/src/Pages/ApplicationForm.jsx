@@ -1,21 +1,44 @@
 import React, { useState } from 'react';
 import Footer from '../Components/Footer';
+import { apiCall } from '../utils/api';
 
 const ApplicationForm = () => {
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', phone: '', experience: '', style: 'western'
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setForm({ firstName: '', lastName: '', email: '', phone: '', experience: '', style: 'western' });
-    }, 2000);
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await apiCall('/applications/submit', 'POST', {
+        fullName: `${form.firstName} ${form.lastName}`.trim(),
+        email: form.email,
+        phone: form.phone,
+        experience: form.experience,
+        course: form.style
+      });
+
+      if (res.success) {
+        setSubmitted(true);
+        setForm({ firstName: '', lastName: '', email: '', phone: '', experience: '', style: 'western' });
+        setTimeout(() => {
+          setSubmitted(false);
+        }, 4000);
+      }
+    } catch (err) {
+      console.error('Failed to submit application to MongoDB:', err);
+      setError(err.message || 'Failed to submit application.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -30,6 +53,11 @@ const ApplicationForm = () => {
 
           <div className="form-container">
             <div className="form-card">
+              {error && (
+                <div style={{ color: '#ef4444', marginBottom: '1rem', textAlign: 'center', fontSize: '0.9rem' }}>
+                  {error}
+                </div>
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="form-row">
                   <div className="form-group">

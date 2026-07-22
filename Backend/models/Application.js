@@ -1,17 +1,16 @@
 const mongoose = require('mongoose');
 
 const applicationSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-  businessName: { type: String, required: true, trim: true },
-  ownerName: { type: String, required: true, trim: true },
-  category: { type: String, required: true, trim: true },
-  address: { type: String, required: true },
-  gst: { type: String, default: '' },
-  phone: { type: String, required: true },
-  email: { type: String, required: true, lowercase: true },
-  productDetails: { type: String, required: true },
-  productImageUrl: { type: String, default: '' },
-  businessExperience: { type: String, required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
+  fullName: { type: String, required: true, trim: true },
+  email: { type: String, required: true, lowercase: true, trim: true },
+  phone: { type: String, required: true, trim: true },
+  age: { type: String, default: '' },
+  gender: { type: String, default: '' },
+  course: { type: String, required: true, trim: true },
+  batch: { type: String, default: 'Morning' },
+  address: { type: String, default: '' },
+  experience: { type: String, default: '' },
   status: { type: String, enum: ['Pending', 'Under Review', 'Approved', 'Rejected'], default: 'Pending', index: true },
   isDeleted: { type: Boolean, default: false, index: true }
 }, {

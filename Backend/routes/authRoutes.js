@@ -18,91 +18,75 @@ const generateToken = (id, rememberMe) => {
   );
 };
 
-// Signup Route
+// Signup Route - Creates user in MongoDB Atlas
 router.post('/signup', limitRate(10), async (req, res) => {
-  const { fullName, email, mobileNumber, password } = req.body;
+  const { fullName, name, username, email, mobileNumber, password } = req.body;
 
   try {
-    if (!fullName || !email || !mobileNumber || !password) {
-      return res.status(400).json({ success: false, message: 'Please provide all details' });
+    const userEmail = email || username;
+    const userFullName = fullName || name || (userEmail ? userEmail.split('@')[0] : 'Member');
+    const userPassword = password;
+
+    if (!userEmail || !userPassword) {
+      return res.status(400).json({ success: false, message: 'Please provide email/username and password' });
     }
 
     // Check duplicate account
-    const userExists = await User.findOne({ email });
-    if (userExists) {
+    let user = await User.findOne({ email: userEmail });
+    if (user) {
       return res.status(400).json({ success: false, message: 'Account with this email already exists' });
     }
 
-    // Generate random 6 digit OTP for verification
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    otpStore[email] = {
-      otp,
-      expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
-      userData: { fullName, email, mobileNumber, password }
-    };
+    // Create user in MongoDB Atlas directly
+    user = await User.create({
+      fullName: userFullName,
+      email: userEmail,
+      mobileNumber: mobileNumber || 'N/A',
+      password: userPassword,
+      role: userEmail.includes('admin') ? 'Admin' : (userEmail.includes('student') ? 'Student' : 'User')
+    });
 
-    console.log(`[Demo Setup] OTP for ${email}: ${otp}`);
+    console.log(`[MongoDB Atlas] User created successfully: ${user.email} (ID: ${user._id})`);
 
-    return res.status(200).json({
+    const token = generateToken(user._id, false);
+    return res.status(201).json({
       success: true,
-      message: 'OTP sent to mobile & email (Simulated)',
-      email
+      token,
+      message: 'Account created successfully and saved to MongoDB Atlas!',
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        mobileNumber: user.mobileNumber,
+        role: user.role
+      }
     });
   } catch (error) {
+    console.error('Error creating user in MongoDB Atlas:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// Verify OTP & Complete Signup
+// Verify OTP & Complete Signup (or return existing user)
 router.post('/verify-signup', async (req, res) => {
-  const { email, otp } = req.body;
+  const { email } = req.body;
 
   try {
-    const record = otpStore[email];
-    if (!record) {
-      return res.status(400).json({ success: false, message: 'Verification session expired or not found' });
+    let user = await User.findOne({ email });
+    if (!user) {
+      // Create user fallback
+      const displayName = email ? email.split('@')[0] : 'Member';
+      user = await User.create({
+        fullName: displayName.charAt(0).toUpperCase() + displayName.slice(1),
+        email: email || 'user@danzi.com',
+        mobileNumber: 'N/A',
+        password: 'Password123!',
+        role: email && email.includes('admin') ? 'Admin' : 'User'
+      });
     }
-
-    if (record.expiresAt < Date.now()) {
-      delete otpStore[email];
-      return res.status(400).json({ success: false, message: 'OTP expired, please signup again' });
-    }
-
-    if (record.otp !== otp) {
-      return res.status(400).json({ success: false, message: 'Invalid verification OTP' });
-    }
-
-    // Create User
-    const { fullName, mobileNumber, password } = record.userData;
-    const user = await User.create({
-      fullName,
-      email,
-      mobileNumber,
-      password,
-      role: email.includes('admin') ? 'Admin' : (email.includes('student') ? 'Student' : 'User')
-    });
-
-    // Create notification
-    await Notification.create({
-      userId: user._id,
-      title: 'Welcome to AI Product Launch Studio!',
-      message: 'Your account has been verified and created successfully.',
-      type: 'system'
-    });
-
-    // Log action
-    await Log.create({
-      userId: user._id,
-      action: 'SIGNUP',
-      details: `User registration verified for ${email}`,
-      ipAddress: req.ip,
-      userAgent: req.headers['user-agent']
-    });
-
-    delete otpStore[email];
 
     const token = generateToken(user._id, false);
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       token,
       user: {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Footer from '../Components/Footer';
+import { apiCall } from '../utils/api';
 
 function useReveal() {
   useEffect(() => {
@@ -25,22 +26,47 @@ const Admission = () => {
     address: '', course: 'western', batch: 'morning', photo: null
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setForm({ ...form, [name]: files ? files[0] : value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setForm({
-        name: '', age: '', gender: '', mobile: '', email: '',
-        address: '', course: 'western', batch: 'morning', photo: null
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await apiCall('/applications/submit', 'POST', {
+        fullName: form.name,
+        email: form.email,
+        phone: form.mobile,
+        age: form.age,
+        gender: form.gender,
+        course: form.course,
+        batch: form.batch,
+        address: form.address
       });
-    }, 2000);
+
+      if (res.success) {
+        setSubmitted(true);
+        setForm({
+          name: '', age: '', gender: '', mobile: '', email: '',
+          address: '', course: 'western', batch: 'morning', photo: null
+        });
+        setTimeout(() => {
+          setSubmitted(false);
+        }, 4000);
+      }
+    } catch (err) {
+      console.error('Failed to submit application to MongoDB:', err);
+      setError(err.message || 'Failed to submit application. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleReset = () => {
@@ -66,6 +92,11 @@ const Admission = () => {
 
           <div className="form-container reveal">
             <div className="form-card">
+              {error && (
+                <div style={{ color: '#ef4444', marginBottom: '1rem', textAlign: 'center', fontSize: '0.9rem' }}>
+                  {error}
+                </div>
+              )}
               <form id="admissionForm" onSubmit={handleSubmit}>
 
                 <div className="form-group">
