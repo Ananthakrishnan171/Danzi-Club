@@ -33,22 +33,26 @@ const Navbar = () => {
       </div>
 
       <div className="nav-cta">
-        {localStorage.getItem('token') ? (
-          <>
-            <Link to="/students" className="btn btn-ghost">Dashboard</Link>
-            <button
-              onClick={() => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = '/login';
-              }}
-              className="btn btn-primary"
-              style={{ fontFamily: 'inherit', border: 'none', cursor: 'pointer' }}
-            >
-              Logout
-            </button>
-          </>
-        ) : (
+        {localStorage.getItem('token') ? (() => {
+          const user = JSON.parse(localStorage.getItem('user') || '{}');
+          const dashboardLink = user.role === 'Admin' ? '/admin' : '/students';
+          return (
+            <>
+              <Link to={dashboardLink} className="btn btn-ghost">Dashboard</Link>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('user');
+                  window.location.href = '/login';
+                }}
+                className="btn btn-primary"
+                style={{ fontFamily: 'inherit', border: 'none', cursor: 'pointer' }}
+              >
+                Logout
+              </button>
+            </>
+          );
+        })() : (
           <>
             <Link to="/login" className="btn btn-ghost">Login</Link>
             <Link to="/signup" className="btn btn-primary">Sign Up</Link>
