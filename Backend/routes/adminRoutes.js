@@ -88,13 +88,18 @@ router.put('/users/:id/role', adminOnly, async (req, res) => {
     user.role = role;
     await user.save();
 
-    await Log.create({
-      userId: req.user._id,
-      action: 'ADMIN_USER_ROLE_CHANGE',
-      details: `Updated role of ${user.email} to ${role}`,
-      ipAddress: req.ip,
-      userAgent: req.headers['user-agent']
-    });
+    // Only log if admin is a real DB user (not the hardcoded admin)
+    if (req.user._id !== 'admin-hardcoded') {
+      try {
+        await Log.create({
+          userId: req.user._id,
+          action: 'ADMIN_USER_ROLE_CHANGE',
+          details: `Updated role of ${user.email} to ${role}`,
+          ipAddress: req.ip,
+          userAgent: req.headers['user-agent']
+        });
+      } catch (logErr) { /* non-critical, ignore */ }
+    }
 
     return res.status(200).json({ success: true, message: 'User role updated successfully' });
   } catch (error) {
@@ -176,13 +181,18 @@ router.put('/applications/:id/status', adminOnly, async (req, res) => {
     application.status = status;
     await application.save();
 
-    await Log.create({
-      userId: req.user._id,
-      action: 'ADMIN_APPLICATION_STATUS_CHANGE',
-      details: `Updated application for ${application.businessName} to ${status}`,
-      ipAddress: req.ip,
-      userAgent: req.headers['user-agent']
-    });
+    // Only log if admin is a real DB user (not the hardcoded admin)
+    if (req.user._id !== 'admin-hardcoded') {
+      try {
+        await Log.create({
+          userId: req.user._id,
+          action: 'ADMIN_APPLICATION_STATUS_CHANGE',
+          details: `Updated application status to ${status}`,
+          ipAddress: req.ip,
+          userAgent: req.headers['user-agent']
+        });
+      } catch (logErr) { /* non-critical, ignore */ }
+    }
 
     return res.status(200).json({ success: true, message: `Application status updated to ${status}` });
   } catch (error) {
