@@ -186,7 +186,6 @@ const Instructors = () => {
   const navigate = useNavigate();
   const [trainers, setTrainers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activeModal, setActiveModal] = useState(null);
@@ -194,7 +193,6 @@ const Instructors = () => {
   // Fetch instructors from Backend API
   const fetchInstructors = async () => {
     setLoading(true);
-    setError(null);
     try {
       const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
       const apiUrl = baseUrl.endsWith('/cms/instructors') ? baseUrl : `${baseUrl.replace(/\/$/, '')}/cms/instructors`;
@@ -222,7 +220,6 @@ const Instructors = () => {
       }
     } catch (err) {
       console.error('Failed to load instructors from backend:', err);
-      setError(err.message);
       setTrainers(fallbackInstructors);
     } finally {
       setLoading(false);
