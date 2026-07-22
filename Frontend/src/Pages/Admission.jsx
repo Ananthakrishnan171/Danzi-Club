@@ -26,7 +26,6 @@ const Admission = () => {
     address: '', course: 'western', batch: 'morning', photo: null
   });
   const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
