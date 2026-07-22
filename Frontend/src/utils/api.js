@@ -50,10 +50,12 @@ function getOfflineMock(endpoint, method, body, originalError) {
       return { success: true, token: 'mock-admin-token', user: mockAdmin };
     }
 
-    // Regular user login
+    // Regular user login — derive display name from email prefix
+    const emailPrefix = body.email.split('@')[0];
+    const derivedName = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1).replace(/[._]/g, ' ');
     const mockUser = {
       id: 'mock-user-123',
-      fullName: 'Janardhan Prasad',
+      fullName: derivedName,
       email: body.email,
       mobileNumber: '9876543210',
       role: 'User'
@@ -68,11 +70,13 @@ function getOfflineMock(endpoint, method, body, originalError) {
   }
 
   if (endpoint.includes('/auth/verify-signup')) {
+    // Use the fullName provided during signup if available
+    const signupName = body.fullName || (body.email.split('@')[0].charAt(0).toUpperCase() + body.email.split('@')[0].slice(1));
     const mockUser = {
       id: 'mock-user-123',
-      fullName: 'Janardhan Prasad',
+      fullName: signupName,
       email: body.email,
-      mobileNumber: '9876543210',
+      mobileNumber: body.mobileNumber || '9876543210',
       role: body.email.includes('admin') ? 'Admin' : (body.email.includes('student') ? 'Student' : 'User')
     };
     localStorage.setItem('token', 'mock-jwt-token-xyz');
